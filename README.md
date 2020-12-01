@@ -1,1 +1,1 @@
-# avito_internship
+# avito-monitor
