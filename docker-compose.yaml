@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    volumes:
+        - ./postgres_data:/var/lib/postgresql/data/
+    env_file:
+        - ./.env
+
+  web:
+    image: frolkit/av-parser
+    restart: always
+    command: gunicorn av_parser.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+        - ./static:/code/static/
+    depends_on:
+        - db
+    env_file:
+        - ./.env
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    depends_on: 
+        - web
+
+  celery:
+    image: frolkit/av-parser
+    restart: always
+    command: celery -A av_parser worker -B
+    depends_on: 
+        - rabbitmq
+    env_file:
+        - ./.env
+
+  nginx:
+    image: frolkit/nginx
+    restart: always
+    depends_on:
+        - web
+    volumes:
+        - ./static:/etc/nginx/static/
+    ports:
+        - "80:80"
