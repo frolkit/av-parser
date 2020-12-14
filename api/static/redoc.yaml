@@ -1,0 +1,155 @@
+openapi: 3.0.2
+info:
+  title: 'Av-parser'
+  version: ''
+  description: |
+     запросы к API начинаются с `/`
+
+     # Описание
+     Проект **Av-parser** собирает статистику по зарегистрированным в системе поисковым запросам 1 раз в час.
+     
+     # Алгоритм работы 
+     1. Пользователь отправляет запрос с параметрами {'query': штаны, 'location': Москва} на '/add/'.
+     2. **Av-parser** регистрирует запрос в системе, получает объявления и их колличество.
+     3. Пользователь заходит на '/stat/ и получает статистику по всем поисковым запросам.
+      Пользователь может отфильтировать данные по трём параметрам: 'id', 'start', 'stop'.
+      - **id** - фильтр по ID
+      - **start** - фильтр по дате в формате timestamp
+      - **stop** - фильтр по дате в формате timestamp
+     4. Пользователь заходит на '/top/' и получает объявления по всем поисковым запросам.
+      Пользователь может отфильтировать данные по одному параметру: 'id'
+      - **id** - фильтр по ID
+
+servers:
+  - url: /
+ 
+tags:
+  - name: ADD
+    description: Добавить отслеживание поискового запроса в систему.
+  - name: STAT
+    description: Получить статистику по поисковому запросу.
+  - name: TOP
+    description: Получить последние 5 объявлений.
+
+paths:
+  /add/:
+    post:
+      tags:
+        - ADD
+      description: Создать поисковый запрос.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        201:
+          description: Поисковый запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+  /stat/:
+    get:
+      tags:
+        - STAT
+      description: Получить статистику по поисковому запросу.
+      parameters:
+        - in: query
+          name: id
+          description: Фильтрация по ID
+          schema:
+            type: integer
+        - in: query
+          name: start
+          description: Фильтрация по интервалу (От)
+          schema:
+            type: integer
+        - in: query
+          name: stop
+          description: Фильтрация по интервалу (До)
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Статистика колличества объявлений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemHistory'
+  /top/:
+    get:
+      tags:
+        - TOP
+      description: Получить последние 5 объявлений.
+      parameters:
+        - in: query
+          name: id
+          description: Фильтрация по ID
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Список объявлений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ad'
+
+components:
+  schemas:
+    Item:
+      title: Запрос
+      type: object
+      description: Create Item
+      required:
+          - query
+          - location
+      properties:
+        query:
+          type: string
+          title: Поисковой запрос
+        location:
+          type: string
+          title: Локация для поиска
+    ItemHistory:
+      title: Запрос
+      type: object
+      description: счётчики
+      properties:
+        id:
+          type: integer
+          title: id
+        count:
+          type: integer
+          title: count
+        timestamp:
+          type: integer
+          title: timestamp
+    Ad:
+      title: объявление
+      type: object
+      description: объявление
+      properties:
+        item:
+          type: integer
+          title: item
+        title:
+          type: string
+          title: title
+        location:
+          type: string
+          title: location
+        price:
+          type: string
+          title: price
+        url:
+          type: string
+          title: url

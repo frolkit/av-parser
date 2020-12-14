@@ -1,5 +1,5 @@
 """
-ASGI config for avito_monitor project.
+ASGI config for av_parser project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'avito_monitor.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'av_parser.settings')
 
 application = get_asgi_application()

@@ -1,5 +1,5 @@
 """
-WSGI config for avito_monitor project.
+WSGI config for av_parser project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'avito_monitor.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'av_parser.settings')
 
 application = get_wsgi_application()
