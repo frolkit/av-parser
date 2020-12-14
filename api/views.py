@@ -17,10 +17,7 @@ def add(request):
         obj, created = Item.objects.get_or_create(query=query,
                                                   location=location)
         if created:
-            if DEBUG:
-                create_stat_and_top(item=obj.id)
-            else:
-                create_stat_and_top.delay(item=obj.id)
+            create_stat_and_top.delay(item=obj.id)
         return Response(obj.id, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

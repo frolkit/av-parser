@@ -1,10 +1,12 @@
 version: '3.8'
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+
   db:
     image: postgres
-    volumes:
-        - ./postgres_data:/var/lib/postgresql/data/
     env_file:
         - ./.env
 
@@ -18,12 +20,6 @@ services:
         - db
     env_file:
         - ./.env
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    restart: always
-    depends_on: 
-        - web
 
   celery:
     image: frolkit/av-parser

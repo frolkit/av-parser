@@ -41,22 +41,13 @@ docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py collectstatic
 ```
 
-7. Проект доступен по 127.0.0.1:80
-
-
-## Запуск тестирования.
-
-1. Тестирование можно запустить только в среде разработки. В .env включите DEBUG мод.
+7. Запустите тесты.
 ```
-DEBUG=True
-SECRET_KEY=Получите ключ
-AVITO_AUTH_KEY=Получите ключ
+docker-compose exec web python manage.py test
 ```
 
-2. Запустите тесты
-```
-python manage.py test
-```
+8. Проект доступен по 127.0.0.1:80
+
 
 ## Получение SECRET_KEY и AVITO_AUTH_KEY.
 

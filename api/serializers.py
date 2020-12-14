@@ -1,6 +1,6 @@
 import requests
 from rest_framework import serializers
-from rest_framework.exceptions import Throttled, NotFound
+from rest_framework.exceptions import Throttled, NotAuthenticated
 
 from av_parser.settings import AVITO_AUTH_KEY
 from .models import Location, ItemHistory, Ad
@@ -18,6 +18,8 @@ class ItemSerializer(serializers.Serializer):
             'limit': 10
             }
         response = requests.get(url, params=params_data)
+        if response.status_code == 403:
+            raise NotAuthenticated()
         if response.status_code == 429:
             raise Throttled()
         location_list = response.json()['result']['locations']
@@ -27,7 +29,7 @@ class ItemSerializer(serializers.Serializer):
                 location = Location.objects.create(title=title,
                                                    location_id=location_id)
                 return location
-        raise NotFound(f"Location <{title}> not found. Check your input.")
+        raise NotFound(f"Location {title} not found. Check your input.")
 
     def get_location_id(self, title: str):
         location = Location.objects.filter(title=title).first()

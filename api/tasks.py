@@ -1,13 +1,10 @@
 import requests
 import time
-from celery import Celery
-from rest_framework.exceptions import Throttled
+from av_parser.celery import app
+from rest_framework.exceptions import Throttled, NotAuthenticated
 
 from av_parser.settings import AVITO_AUTH_KEY
 from .models import Item, ItemHistory, Ad
-
-
-app = Celery()
 
 
 def request_to_avito(item):
@@ -18,6 +15,8 @@ def request_to_avito(item):
         'locationId': item.location.location_id
         }
     response = requests.get(url, params=post_data)
+    if response.status_code == 403:
+        raise NotAuthenticated()
     if response.status_code == 429:
         raise Throttled()
     response = response.json()['result']
