@@ -1,6 +1,8 @@
 import requests
 from rest_framework import serializers
-from rest_framework.exceptions import Throttled, NotAuthenticated
+from rest_framework.exceptions import (Throttled,
+                                       NotAuthenticated,
+                                       NotFound)
 
 from av_parser.settings import AVITO_AUTH_KEY
 from .models import Location, ItemHistory, Ad
